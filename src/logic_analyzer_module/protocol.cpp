@@ -6,10 +6,7 @@
 
 #include "config.h"
 
-//using enum LA_log::log_level; // TODO figure out
-
 void Protocol::start() {
-    int i = 0;
     while (true) {
         if (uart->available()) {
             uint8_t cmd = (uint8_t)uart->getc();
@@ -22,7 +19,6 @@ void Protocol::start() {
                 "Capture complete. Samples count: %d Pre trigger count: %d\nSending Samples",
                 capture.get_sample_count(), capture.get_pre_trigger_count()
             );
-            /* DEBUG
             if (capture.get_triggered_channel() != -1) {
                 LA_LOG(LA_log::LOG_DEBUG, "\nTriggered channel: %d", capture.get_triggered_channel());
             }
@@ -33,15 +29,9 @@ void Protocol::start() {
                     capture.get_config()->pre_trigger_samples - capture.get_pre_trigger_count()
                 );
             }
-            */
 
             sump_send_samples();
         }
-
-        if (i == 0) {
-            // capture.test();
-        }
-        i = (i + 1) % 10000000;
     }
 }
 
@@ -231,13 +221,12 @@ void Protocol::sump_send_samples() {
         }
         
     } else {
-        //for (int i=capture.get_sample_count()-1; i >= min_index; i--) { DEBUG
+        for (int i=capture.get_sample_count()-1; i >= min_index; i--) {
         for (int i=500-1; i >= 0; i--) {
             if (is_aborting()) return;
             uint sample = capture.get_sample(i);
             send_sample(sample);
-            //LA_LOG(LA_log::LOG_DEBUG, "Sample %d: 0x%x", i - min_index, sample); DEBUG
-            LA_LOG(LA_log::LOG_DEBUG, "Sample %d: 0x%x", i, sample);
+            LA_LOG(LA_log::LOG_DEBUG, "Sample %d: 0x%x", i - min_index, sample);
         }
     }
     LA_LOG(LA_log::LOG_DEBUG, "Transfer completed");
@@ -267,7 +256,6 @@ inline void Protocol::put_uint32(uint32_t i) {
 }
 
 
-// TODO check if adding timeout makes sense here or causes undefined behaviour
 inline uint32_t Protocol::get_uint32() {
     uint32_t val = 0;
     for (int i=0; i < 4; i++) {

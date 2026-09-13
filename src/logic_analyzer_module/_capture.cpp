@@ -3,7 +3,6 @@
 #include "LA_log.h"
 #include "task.h"
 
-//using enum LA_log::log_level; // TODO figure out
 
 Capture::Capture() {
     is_capturing = is_aborting = capture_completed = false;
@@ -308,18 +307,15 @@ void Capture::capture_complete_handler() {
     if (!is_aborting) {
         pre_trigger_first = 0;
         pre_trigger_count = 0;
-        /* DEBUG
         if (config.pre_trigger_samples) {
             uint transfer_count = dma_pre_trigger->TRANS_COUNT;
             pre_trigger_first = (int)(transfer_count % PRE_TRIGGER_BUFFER_SIZE) - (int)config.pre_trigger_samples;
             pre_trigger_count = config.pre_trigger_samples;
-            // TODO Check if this works even though first may be negative
             if ((pre_trigger_first < 0) && (transfer_count < PRE_TRIGGER_BUFFER_SIZE)) {
                 pre_trigger_first = 0;
                 pre_trigger_count = transfer_count;
             }
         }
-        */
         capture_stop();
         is_capturing = false;
         capture_completed = true;
@@ -329,7 +325,6 @@ void Capture::capture_complete_handler() {
 }
 
 uint Capture::get_sample(uint index) {
-    /* DEBUG
     if (index >= get_sample_count()) return 0;
 
     if (index < pre_trigger_count) {
@@ -344,7 +339,6 @@ uint Capture::get_sample(uint index) {
     }
 
     return post_trigger_buffer[index - pre_trigger_count];
-    */
    return post_trigger_buffer[index];
 }
 
@@ -385,7 +379,6 @@ void Capture::capture_stop() {
             clear_fifo(sm);
         }
     }
-    // TODO Clear SM instructions
 }
 
 void Capture::clear_fifo(std::unique_ptr<SM>& sm) {

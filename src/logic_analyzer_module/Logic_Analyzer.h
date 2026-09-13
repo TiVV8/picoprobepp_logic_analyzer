@@ -2,19 +2,12 @@
 #include "usb_device.h"
 #include "usb_device_controller.h"
 #include "usb_cdc_acm_adapter.h"
-//////////
 #include "usb_bos.h"
 #include "usb_ms_OS_20_capability.h"
-//////////
-// DEBUG
-#include "posix_io.h"
-//
-
 #include "task.h"
 #include "LA_log.h"
 
 #include "config.h"
-// Todo this should work via config.h
 #include "unique_id_rp2040.h"
 #define   unique_id_rp2xxx unique_id_rp2040
 #include "uart_rp2040.h"
@@ -69,12 +62,9 @@ int main() {
     LA_log::inst.setLevel(LA_log::LOG_DEBUG);
     //
 
-    //////////
     // Add BOS and MS OS 2.0 capability descriptor
     usb_bos bos(controller, device); // Add a Binary Object Store
     usb_ms_OS_20_capability ms_os20(bos);
-    //////////
-
     // Activate the USB device
     driver.pullup_enable(true);
 

@@ -27,7 +27,7 @@
 
 #define PRE_TRIGGER_RING_BITS 10
 #define PRE_TRIGGER_BUFFER_SIZE (1 << PRE_TRIGGER_RING_BITS)
-#define PRE_TRIGGER_RING_TRANSFER_COUNT ((0xffffffffu / PRE_TRIGGER_BUFFER_SIZE) * PRE_TRIGGER_BUFFER_SIZE)  // TODO Investigate if this makes sense or what else would
+#define PRE_TRIGGER_RING_TRANSFER_COUNT ((0xffffffffu / PRE_TRIGGER_BUFFER_SIZE) * PRE_TRIGGER_BUFFER_SIZE)
 #define POST_TRIGGER_BUFFER_SIZE 100000
 
 #define PIN_BASE (gpio_pin_t)18
@@ -85,12 +85,6 @@ public:
     uint get_pre_trigger_count(){return pre_trigger_count;};
     uint get_sample_count(){return pre_trigger_count + config.total_samples - config.pre_trigger_samples;};
     int get_triggered_channel(){return triggered_channel;};
-
-    // DEBUG
-    void test() {
-        LA_LOG(LA_log::LOG_DEBUG, "%d, %d, %d, %d, %d", post_trigger_buffer[0], post_trigger_buffer[1], post_trigger_buffer[2], post_trigger_buffer[3], post_trigger_buffer[4]);
-    }
-    /////
 private:
     const uint triggered_channel_index[4] = {0, 1, 2, 3};
     uint pio0_ctrl;

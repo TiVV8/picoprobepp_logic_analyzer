@@ -7,8 +7,6 @@
 #include "_capture.h"
 #include "LA_log.h"
 
-//using enum LA_log::log_level; // TODO figure out
-
 #define TIMEOUT -2
 
 typedef unsigned int uint;
