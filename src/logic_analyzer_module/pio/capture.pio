@@ -1,0 +1,91 @@
+.program capture
+    //nop // in pins pin_count
+    in pins, 1
+.wrap
+
+.program trigger_level_high
+    wait 1 pin 0 
+    wait 1 pin 0 
+    push
+halt:
+    jmp halt
+
+.program trigger_level_low
+    wait 0 pin 0
+    wait 0 pin 0
+    push
+halt:
+    jmp halt
+
+.program trigger_edge_high
+    wait 0 pin 0
+    wait 1 pin 0
+    push
+halt:
+    jmp halt
+
+.program trigger_edge_low
+    wait 1 pin 0
+    wait 0 pin 0
+    push
+halt:
+    jmp halt
+
+.program mux
+    pull
+    mov isr osr
+    push
+    irq 0
+halt:
+    jmp halt
+
+% yahal {
+    void configure_pio_mux(std::unique_ptr<SM>& sm, function<void()> handler) {
+        //
+        // Set clkdiv
+        sm->regs.SM_CLKDIV.INT = 1;
+        sm->regs.SM_CLKDIV.FRAC = 0;
+
+        // TODO enable irq0 source?
+        // Disable SM
+        sm->disable();
+
+        sm->attachIrq(handler);
+        sm->enableIrq();
+    }
+    
+    void configure_capture(std::unique_ptr<SM>& sm, capture_config_t config) {
+        // Set pin base for in
+        sm->regs.SM_PINCTRL.IN_BASE = config.base;
+        // Set shift direction for in
+        sm->regs.SM_SHIFTCTRL.IN_SHIFTDIR = 0;
+        // Enable autopush
+        sm->regs.SM_SHIFTCTRL.AUTOPUSH = true;
+        // Set push threshold
+        //sm->regs.SM_SHIFTCTRL.PUSH_THRESH = config.channels;
+        sm->regs.SM_SHIFTCTRL.PUSH_THRESH = 1;
+
+        // Set the wrap values
+        sm->setWrap(capture_wrap_target, capture_wrap);
+        // Set the PC to the wrap target
+        sm->setRegister(out_dest_t::PC, sm->load_addr + capture_wrap_target);
+
+        sm->setClock(config.rate);
+
+        // Disable SM
+        sm->disable();
+
+        // Encode and set in instruction
+        // sm->pio.INSTR_MEM[sm->load_addr] = op_IN(0, in_src_t::PINS, config.channels);
+    }
+
+    void configure_trigger(std::unique_ptr<SM>& sm, uint rate, gpio_pin_t pin) {
+        sm->setClock(rate);
+
+        // Set pin base for in
+        sm->regs.SM_PINCTRL.IN_BASE = pin;
+
+        // Disable SM
+        sm->disable();
+    }
+%}

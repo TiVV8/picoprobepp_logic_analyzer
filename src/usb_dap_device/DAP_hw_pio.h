@@ -236,14 +236,14 @@ public:
     }
 
 private:
-    gpio_rp2xxx _swdio_tms;
-    gpio_rp2xxx _swclk_tck;
-    gpio_rp2xxx _tdi;
-    gpio_rp2xxx _tdo;
-    gpio_rp2xxx _reset;
+    gpio_rp2xxx         _swdio_tms;
+    gpio_rp2xxx         _swclk_tck;
+    gpio_rp2xxx         _tdi;
+    gpio_rp2xxx         _tdo;
+    gpio_rp2xxx         _reset;
 
-    SM *        _pio_dap;
-    swd_cmd_t   _cmd;
+    std::unique_ptr<SM> _pio_dap;
+    swd_cmd_t           _cmd;
 };
 
 #endif // DAP_HW_PIO_H

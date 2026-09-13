@@ -114,7 +114,7 @@ union __attribute__((__packed__)) swd_cmd_t {
     uint32_t value {0};
 };
 
-void configure_SWD(SM * sm, uint8_t swdio_pin, uint8_t swclk_pin) {
+void configure_SWD(std::unique_ptr<SM>& sm, uint8_t swdio_pin, uint8_t swclk_pin) {
     // Set the default SM clock rate (250kHz SWCLK)
     // This value will be overwritten by the DAP protocol code
     sm->setClock(1000000);
@@ -152,7 +152,7 @@ void configure_SWD(SM * sm, uint8_t swdio_pin, uint8_t swclk_pin) {
     sm->regs.SM_PINCTRL.SIDESET_BASE  = swclk_pin;
 }
 
-void configure_JTAG(SM * sm, uint8_t tms_pin, uint8_t tck_pin,
+void configure_JTAG(std::unique_ptr<SM>& sm, uint8_t tms_pin, uint8_t tck_pin,
                              uint8_t tdi_pin, uint8_t tdo_pin) {
     // Set the default SM clock rate (250kHz TCK)
     // This value will be overwritten by the DAP protocol code

@@ -31,6 +31,8 @@ using enum TUPP::wPropertyDataType_t;
 #include "DAP_hw_pio.h"
 #include "DAP_hw_gpio.h"
 #include "DAP_log.h"
+#include "LA_log.h"
+#include "Logic_Analyzer.h"
 
 #include "posix_io.h"
 #include "task.h"
@@ -43,9 +45,10 @@ int main() {
     posix_io::inst.register_stdio(uart);
     #endif
 
-    // Logging control for USB and DAP code
+    // Logging control for USB, DAP code and Logic Analyzer
     usb_log::inst.setLevel(usb_log::DEBUG_LEVEL_USB);
     DAP_log::inst.setLevel(DAP_log::DEBUG_LEVEL_DAP);
+    LA_log::inst.setLevel(DAP_log::DEBUG_LEVEL_LA);
 
     // Get the unique ID of this MCU/board
     auto id = unique_id_rp2xxx::read_unique_id_string();
@@ -134,6 +137,14 @@ int main() {
     DAP_Protocol::connected_cb  = [&](bool v) { leds.set_connected_led(v);  };
     DAP_Protocol::running_cb    = [&](bool v) { leds.set_running_led(v);    };
 
+    // Set up Logic Analyzer
+    usb_cdc_acm_adapter uart(controller, config);
+    uart.set_FunctionName("Picoprobe++ Logic Analyzer UART");
+
+    Logic_Analyzer la(uart);
+    la.sign_up();
+    la.setPriority(80);
+
     // Optional: YAHAL Task Monitor
     #ifdef START_TASK_MONITOR
     task_monitor monitor;
@@ -153,7 +164,7 @@ int main() {
     // Set DCD and DTR after USB has connected
     target_uart_device.set_dcd_dtr(true, true);
 
-    // Welcome the user by blinking some LEDs :)
+    // Welcome the user by blinking some :)
     // This also indicates that the USB enumeration
     // worked and the probe is ready to be used!
     leds.welcome();
