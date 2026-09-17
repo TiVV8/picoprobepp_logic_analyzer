@@ -46,6 +46,7 @@ halt:
         sm->regs.SM_CLKDIV.INT = 1;
         sm->regs.SM_CLKDIV.FRAC = 0;
 
+        // TODO enable irq0 source?
         // Disable SM
         sm->disable();
 

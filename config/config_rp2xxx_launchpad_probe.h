@@ -25,6 +25,7 @@
 //#define DEBUG_USB_UART_ENABLE                   // Enable debug output via separate CDC ACM device
 #define DEBUG_LEVEL_USB	            LOG_INFO
 #define DEBUG_LEVEL_DAP             LOG_INFO
+#define DEBUG_LEVEL_LA             LOG_INFO
 //#define START_TASK_MONITOR                      // Start the task monitor
 
 ///////////////////////
@@ -97,6 +98,20 @@
 
 #define JTAG_DEV_COUNT              8
 #define JTAG_IR_LENGTH              4
+
+
+//////////////////////////////////
+// Logic Analyzer configuration //
+//////////////////////////////////
+
+// SUMP metdata
+#define DEVICE_NAME "RP2040 Launchpad Debug Probe"
+#define DEVICE_VERSION "v0.1"
+#define MAX_CHANNELS 12
+#define MAX_TOTAL_SAMPLES 200000  // in bytes (TODO check for Debug Probe)
+#define MAX_SAMPLE_RATE 200000000  // Hz | Maximum rate for sump protocol
+#define CLOCK_RATE 200000000  // Hz | Required because clock divisor by libsigrok, is based on this value
+#define PROTOCOL_VERSION 2
 
 ////////////////////////
 // GPIO configuration //

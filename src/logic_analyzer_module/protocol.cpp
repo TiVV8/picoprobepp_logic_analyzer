@@ -222,7 +222,6 @@ void Protocol::sump_send_samples() {
         
     } else {
         for (int i=capture.get_sample_count()-1; i >= min_index; i--) {
-        for (int i=500-1; i >= 0; i--) {
             if (is_aborting()) return;
             uint sample = capture.get_sample(i);
             send_sample(sample);

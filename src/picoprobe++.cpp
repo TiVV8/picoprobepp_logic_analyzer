@@ -48,7 +48,7 @@ int main() {
     // Logging control for USB, DAP code and Logic Analyzer
     usb_log::inst.setLevel(usb_log::DEBUG_LEVEL_USB);
     DAP_log::inst.setLevel(DAP_log::DEBUG_LEVEL_DAP);
-    LA_log::inst.setLevel(DAP_log::DEBUG_LEVEL_LA);
+    LA_log::inst.setLevel(LA_log::DEBUG_LEVEL_LA);
 
     // Get the unique ID of this MCU/board
     auto id = unique_id_rp2xxx::read_unique_id_string();
@@ -138,10 +138,10 @@ int main() {
     DAP_Protocol::running_cb    = [&](bool v) { leds.set_running_led(v);    };
 
     // Set up Logic Analyzer
-    usb_cdc_acm_adapter uart(controller, config);
-    uart.set_FunctionName("Picoprobe++ Logic Analyzer UART");
+    usb_cdc_acm_adapter la_uart(controller, config);
+    la_uart.set_FunctionName("Picoprobe++ Logic Analyzer UART");
 
-    Logic_Analyzer la(uart);
+    Logic_Analyzer la(la_uart);
     la.sign_up();
     la.setPriority(80);
 
